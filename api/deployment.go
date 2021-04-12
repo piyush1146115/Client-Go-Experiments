@@ -85,3 +85,20 @@ func DeleteDeployment() {
 	}
 	fmt.Printf("%s is deleted successfully.\n", deploymentName)
 }
+
+func UpdateDeployment() {
+	fmt.Printf("Updating deployment: Scaling the %s deployment to %d replicas \n", deploymentName, replicas)
+	clientSet := CreateClientSet()
+	deploymentClient := clientSet.AppsV1().Deployments(apiv1.NamespaceDefault)
+	result, getErr := deploymentClient.Get(context.TODO(), deploymentName, metav1.GetOptions{})
+	if getErr != nil {
+		panic(fmt.Errorf("Failed to get latest version of Deployment: %v", getErr))
+	}
+	result.Spec.Replicas = int32Ptr(replicas)
+	_, updateErr := deploymentClient.Update(context.TODO(), result, metav1.UpdateOptions{})
+
+	if updateErr != nil {
+		panic(fmt.Errorf("Failed to get latest version of Deployment: %v", updateErr))
+	}
+	fmt.Println("Updated deployment...")
+}

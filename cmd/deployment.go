@@ -22,7 +22,7 @@ import (
 )
 
 var deploymentName string
-var replicas string
+var replicas int32
 
 // deploymentCmd represents the deployment command
 var deploymentCmd = &cobra.Command{
@@ -67,12 +67,27 @@ var deleteDeployment = &cobra.Command{
 	},
 }
 
+var updateDeployment = &cobra.Command{
+	Use:   "updateDeployment",
+	Short: "This command will update a deployment",
+	Long:  "This command will update the number of replicas of a deployment object",
+	Run: func(cmd *cobra.Command, args []string) {
+		api.SetDeploymentName(deploymentName)
+		api.SetReplicas(replicas)
+		api.UpdateDeployment()
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(deploymentCmd)
 	rootCmd.AddCommand(createDeployment)
 	rootCmd.AddCommand(getDeployment)
 	rootCmd.AddCommand(deleteDeployment)
+	rootCmd.AddCommand(updateDeployment)
 	deleteDeployment.PersistentFlags().StringVarP(&deploymentName, "name", "n", "go-client-api-server", "This flag sets the name of the deployment to be deleted")
+	updateDeployment.PersistentFlags().Int32VarP(&replicas, "replica", "r", 1, "This flag sets the number of replica in the update operation")
+	updateDeployment.PersistentFlags().StringVarP(&deploymentName, "name", "n", "go-client-api-server", "This flag sets the name of the deployment to be updated")
+
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
