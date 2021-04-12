@@ -21,6 +21,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var deploymentName string
+var replicas string
+
 // deploymentCmd represents the deployment command
 var deploymentCmd = &cobra.Command{
 	Use:   "deployment",
@@ -54,10 +57,22 @@ var getDeployment = &cobra.Command{
 	},
 }
 
+var deleteDeployment = &cobra.Command{
+	Use:   "deleteDeployment",
+	Short: "This command will delete a deployment",
+	Long:  "This command will delete a deployment resource followed by a flag containing the name of the deployment to be deleted",
+	Run: func(cmd *cobra.Command, args []string) {
+		api.SetDeploymentName(deploymentName)
+		api.DeleteDeployment()
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(deploymentCmd)
 	rootCmd.AddCommand(createDeployment)
 	rootCmd.AddCommand(getDeployment)
+	rootCmd.AddCommand(deleteDeployment)
+	deleteDeployment.PersistentFlags().StringVarP(&deploymentName, "name", "n", "go-client-api-server", "This flag sets the name of the deployment to be deleted")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

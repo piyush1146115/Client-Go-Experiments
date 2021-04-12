@@ -72,3 +72,16 @@ func GetDeployment() {
 		fmt.Printf("%s (%d replicas)\n", item.Name, *item.Spec.Replicas)
 	}
 }
+
+func DeleteDeployment() {
+	fmt.Printf("Deleting a deployment object .... %s \n", deploymentName)
+	clientSet := CreateClientSet()
+	deploymentClient := clientSet.AppsV1().Deployments(apiv1.NamespaceDefault)
+	err := deploymentClient.Delete(context.TODO(), deploymentName, metav1.DeleteOptions{})
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("%s is deleted successfully.\n", deploymentName)
+}
